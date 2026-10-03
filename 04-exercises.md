@@ -1,8 +1,9 @@
 # 第四章 · 实操题目
 
 > **本章你会得到什么**：前三章讲的是"看懂"，这一章只做一件事 —— **练手**。
-> 你不需要会写代码：本章 22 道题里，6 道是**纯只读**的（不改任何文件），其余全是
-> "**你提要求、AI 动手、你验收**"。
+> 你不需要会写代码：本章 22 道题里，6 道是**纯只读**的热身题（不改任何文件、不需要 AI），
+> 另有几道是**"克隆下来只读"的对比题**（4.5、4.6 里那些只看结构、只下判断的题，同样不改文件、
+> 也不需要 AI）；其余的才是"**你提要求、AI 动手、你验收**"。
 >
 > 做完之后，你至少能稳定做到三件事：① 面对任何项目，能自己跑一条命令判断它**好没好**；
 > ② 面对 AI 说的"改好了"，能要到**你自己能跑出来的证据**；③ 面对一个需求，能说出
@@ -10,7 +11,8 @@
 >
 > **重要：本章的题目全部面向公开仓库。** 题目里的每一个仓库都是你在 GitHub 上搜得到、
 > `git clone` 得下来的知名开源项目；你**不需要作者的电脑、不需要任何私有项目**，只需要
-> 三样通用工具：**git、Node（18 及以上）、一个浏览器**。凡本书没有把握的地方都写成
+> 三样通用工具：**git、Node（18 及以上）、一个浏览器**（唯一的例外是 4.8 的发布题，
+> 它还要**一个 GitHub 账号** —— 到那一题会专门说明）。凡本书没有把握的地方都写成
 > "**以你自己的输出为准**"；需要具体文件名时，先给你一条**找出文件名**的命令，
 > 而不是让你照抄一个可能过期的名字。
 
@@ -44,13 +46,13 @@
 | 难度 | 你会做什么 | 风险 | 用时 | 需要 AI 吗 |
 |---|---|---|---|---|
 | ★☆☆ | **只读**：只看、只查、只对比，不改任何文件 | 零 | 5–10 分钟 | 不需要 |
-| ★★☆ | 在**你自己新建的目录**里写点东西；指挥 AI 写小代码 | 低（随时可删） | 10–40 分钟 | 需要 |
+| ★★☆ | 在**你自己新建的目录**里写点东西、指挥 AI 写小代码；**也可能是"克隆下来只读"的对比题**（只比结构、不改任何文件） | 低（随时可删） | 10–40 分钟 | 看题：写小工具的题需要，"只读对比"的题不需要 |
 | ★★★ | 会改代码、会用 git 回退、会做结构决策 | 中（**必须先有回退点**） | 40 分钟以上 | 需要 |
 
 ### 三、三条保命规则（每道题都适用）
 
 1. **★★☆ 以上的题，先提交或先备份**，再让 AI 动手。没有回退点，就不算敢改。
-2. **只在你自己的目录里动手**：练习项目建在**你自己新建的空目录**里（如桌面上的 `my-tools\`）。`git clone` 下来的公开仓库是**别人的仓库**：可以读、可以在自己的副本上试，但**永远不要 `push`**。
+2. **只在你自己的目录里动手**：练习项目建在**你自己新建的空目录**里 —— 具体就是 4.2 起手式里定下的那个 `tools\` 子目录。`git clone` 下来的公开仓库是**别人的仓库**（放在同一层的 `repos\` 里）：可以读、可以在自己的副本上试，但**永远不要 `push`**。
 3. **不要碰正在运行的服务**：本章**没有任何一道题**需要你启动、停止或重启一个服务；热身 6 题也不含任何会占端口的命令。
 
 ### 四、每道题的固定格式
@@ -65,16 +67,27 @@
 
 ## 4.2 热身：不改一行代码也能做的题
 
-以下 6 道题**全部只读**：不改文件、不安装依赖、不打包、不启动或停止任何服务。围绕四个公开仓库：`expressjs/express`（中等规模的 JS 框架，结构清楚）、`chalk/chalk`（很小的 JS 库）、`sindresorhus/is-plain-obj`（著名的"微包"）、`BurntSushi/ripgrep`（Rust 写的搜索工具）。
+以下 6 道题**全部只读**：不改文件、不安装依赖、不打包、不启动或停止任何服务。这 6 道题实际用到的是三个仓库：`expressjs/express`（中等规模的 JS 框架，结构清楚）、`chalk/chalk`（很小的 JS 库）、`BurntSushi/ripgrep`（Rust 写的搜索工具）；第四个 `sindresorhus/is-plain-obj`（著名的"微包"）**本节用不到**，但一起克隆下来 —— 4.5 题目 15 和 4.7 题目 18 要用。
 
-**起手式（只克隆，不安装、不运行）**：
+**起手式（只克隆，不安装、不运行）**：先把整章的目录布局定下来 —— **别人的仓库**和**你自己建的练习项目**从第一天起就分开放：
+
+```
+<一个你自己新建的目录>\          # 例如桌面上的 prog-lab\
+├── repos\                       # 克隆下来的公开仓库：express\ chalk\ ripgrep\ is-plain-obj\ redis\ core\ requests\
+└── tools\                       # 你自己建的练习项目：count-lines\ list-files\ sha256\ mk-sums\
+```
+
+**全章的 `cd` 与相对路径都按这套布局来**，所以请照抄：每道题的验收块都假定你**站在这个目录里**（也就是 `repos\` 和 `tools\` 的父目录）执行，块里第一条 `cd` 会把路径写全；跑偏了就 `cd` 回到这里再来。
 
 ```powershell
-cd <你自己新建的一个空目录>            # 例如桌面上的 git-lab\
+cd <你自己新建的一个空目录>            # 例如桌面上的 prog-lab\
+mkdir repos, tools                     # repos\ 放克隆下来的仓库；tools\ 放你自己建的练习项目
+cd repos
 git clone --depth 1 https://github.com/expressjs/express.git
-git clone --depth 50 https://github.com/chalk/chalk.git     # 题目 1 要看历史
+git clone --depth 50 https://github.com/chalk/chalk.git               # 题目 1 要看历史
 git clone --depth 1 https://github.com/BurntSushi/ripgrep.git
-git clone --depth 1 https://github.com/sindresorhus/is-plain-obj.git
+git clone --depth 1 https://github.com/sindresorhus/is-plain-obj.git  # 本节用不到，题目 15 / 18 会用
+cd ..                                  # 回到父目录：下面每道题的验收块都从这里出发
 ```
 
 > 克隆是**只读操作**：它只把对方的公开代码复制一份到你机器上，不会动到对方的仓库。
@@ -87,7 +100,7 @@ git clone --depth 1 https://github.com/sindresorhus/is-plain-obj.git
 **验收**：
 
 ```powershell
-cd chalk
+cd repos\chalk
 git log --oneline -20
 git log --oneline -10 -- package.json
 git show --stat <上面第二条命令打印的第一个编号>
@@ -104,14 +117,14 @@ git show --stat <上面第二条命令打印的第一个编号>
 **验收**：
 
 ```powershell
-cd express
+cd repos\express
 git status --short                                   # 期望：无输出 = 干净
 @(git ls-files).Count                                # A：git 跟踪的文件数
 @(Get-ChildItem -Recurse -File -Force).Count         # B：硬盘上所有文件（含 .git\）
 @(Get-ChildItem .\.git -Recurse -File -Force).Count  # C：.git\ 自己有多少
 ```
 
-**看什么**：`git status --short` **必须没有输出**（刚克隆完的仓库就是这样）。然后 B 会**明显大于** A，而 **A + C 与 B 是同一个量级**（差额来自 git 自己的辅助文件和被忽略的东西）。**不要记具体数字** —— 数字随仓库变化；要记住的是：**"仓库里有几个文件"这个问题，问不同的人会得到不同的答案，除非先定义清楚问的是哪个集合。** 顺带用浏览器打开 `https://github.com/expressjs/express`，看首页右侧的**语言统计条**，念出排第一的语言名，并用 `git ls-files package.json` 交叉印证 —— 统计条说是 JavaScript，仓库根目录就该有一个声明依赖的文件；**如果这条命令 0 命中，是你的判断错了，不是仓库错了。**
+**看什么**：`git status --short` **必须没有输出**（刚克隆完的仓库就是这样）。然后 B 会**明显大于** A，而 **A + C 应当约等于 B**；多出来的只可能是**被忽略、但确实躺在硬盘上**的文件。**不要记具体数字** —— 数字随仓库变化；要记住的是：**"仓库里有几个文件"这个问题，问不同的人会得到不同的答案，除非先定义清楚问的是哪个集合。** 顺带用浏览器打开 `https://github.com/expressjs/express`，看首页右侧的**语言统计条**，念出排第一的语言名，再用 `git ls-files package.json` 验证你的一个**具体猜测**（"既然是 JavaScript 项目，根目录该有一个声明依赖的文件"）。**注意**：语言统计条只说明**哪种语言的代码最多，不保证任何文件存在** —— 正确姿势是**先看统计条提出猜测，再用命令验证，并以命令结果为准**：命中，猜测成立；0 命中，就说明根目录确实没有这个文件，这同样是一个结论。
 **为什么这道题值得做**：你以后会反复遇到"文档说一套、硬盘上是另一套"的不一致 —— 先学会把它们分开数。
 
 #### 题目 3：找出"已知限制 / 常见问题"这类文档，并复述它
@@ -122,7 +135,7 @@ git status --short                                   # 期望：无输出 = 干�
 **验收**：
 
 ```powershell
-cd ripgrep
+cd repos\ripgrep
 git ls-files "*.md"
 git grep -n -i -E "limitation|known issue|not supported|caveat" -- "*.md"
 ```
@@ -138,15 +151,15 @@ git grep -n -i -E "limitation|known issue|not supported|caveat" -- "*.md"
 **验收**：
 
 ```powershell
-cd express
+cd repos\express
 git ls-files | Select-String -Pattern "gitignore"       # ① 找到它（可能不止一个）
 Get-Content .\.gitignore | Select-Object -First 15      # ② 读最上面十几行
-git check-ignore -v node_modules                        # ③ 验证"node_modules 会不会被忽略"
+git check-ignore -v node_modules/                       # ③ 验证"node_modules 会不会被忽略"（结尾的斜杠别丢）
 git ls-files --others --exclude-standard                # ④ 有没有"没跟踪、也没被忽略"的文件
 git ls-files --others --ignored --exclude-standard      # ⑤ 有没有"被忽略、但硬盘上确实有"的文件
 ```
 
-**看什么**：③ 应打印**命中的那条规则**（格式 `来源文件:行号:规则`）；如果**什么都不打印**，说明 `node_modules` 不是由 `.gitignore` 管的（有的项目写在别处），**这也是结论**：你的猜测被命令否决了。④ 在刚克隆的干净仓库里应当是空的，⑤ 现在也应当是空的 —— **但等你哪天在这里跑过一次 `npm install`，再跑 ⑤ 就会看到一长串路径**。**这就是本题要你亲手看到的差别：`.gitignore` 管的是"要不要进版本库"，不是"能不能存在"。**
+**看什么**：③ 应打印**命中的那条规则**（格式 `来源文件:行号:规则`）。这里有个真坑：**目录形式的规则，必须用带结尾斜杠的参数去问** —— 写 `node_modules` 时 git 把它当成一个普通文件，而规则写的是 `node_modules/`（只匹配目录），于是**静默 0 命中**；写成 `node_modules/` 就能命中，**哪怕这个目录还没被创建出来**（刚克隆的仓库里它确实不存在）。所以 ③ 真的什么都不打印时，有三种解释，都要能对上号：① 你给的参数漏了结尾的斜杠（就是上一句那个坑）；② 这条规则写在**别处**、或不以你问的这个路径形态出现（例如写在某个子目录的 `.gitignore` 里，只对那个子目录生效）；③ 这个仓库**真的没管它**。三种都是**结论** —— 你的猜测被命令验证或否决了。④ 在刚克隆的干净仓库里应当是空的，⑤ 现在也应当是空的 —— **但等你哪天在这里跑过一次 `npm install`，再跑 ⑤ 就会看到一长串路径**。**这就是本题要你亲手看到的差别：`.gitignore` 管的是"要不要进版本库"，不是"能不能存在"。**
 **为什么这道题值得做**：`git status` 干净不代表目录干净；看懂"什么被有意排除在外"，才算真的看懂了仓库。
 
 #### 题目 5：核对"我手上这个文件，是不是仓库里的那一个"
@@ -157,13 +170,14 @@ git ls-files --others --ignored --exclude-standard      # ⑤ 有没有"被忽�
 **验收**：
 
 ```powershell
-cd express
+cd repos\express
 git ls-files | Select-String -Pattern "(?i)readme"    # ① 确切文件名
 git rev-parse HEAD:<第①步看到的那个文件名>             # ② 仓库里记的编号
 git hash-object <同一个文件名>                        # ③ 按硬盘上的内容算出来的编号
+git config --get core.autocrlf                        # ④ 换行符自动转换开关（没设置过就什么都不打印）
 ```
 
-**看什么**：②③ 两个 40 位编号**应当逐字符相同** —— "硬盘上这个文件的内容，与仓库里记的那一份完全一致"。**若不同**，先跑 `git status --short`：文件被改过，编号就会不同（这正是 git 判断"文件变了"的办法）；若文件没被改过却仍然不同，就要看是不是换行符转换 / 过滤器造成的（`git config --get core.autocrlf` 会告诉你）—— 把这条写进你的笔记。**再想清楚这件事的意义**：任何人、在任何机器上，对**同样的内容**算一次，都会得到**同一个编号**；所以"两个地方算出同一个编号"就是"内容一致"的证据，和校验和是完全一样的道理。
+**看什么**：②③ 两个 40 位编号**应当相同** —— 相同就说明"硬盘上这个文件的内容，与仓库里记的那一份一致"。**Windows 上不同，往往只是换行符在捣鬼**：`git hash-object` 默认**不做任何换行符归一化**，而工作区里可能是 CRLF、仓库里存的是 LF，两个编号自然不一样 —— 这不是仓库被污染了。所以先看 ④：它打印出 `true`（Windows 上很常见），上面这个解释就成立；它**什么都不打印**（表示没设置过），才接着查"文件是不是真被改过"：跑 `git status --short` —— 文件被改过，编号就会不同（这正是 git 判断"文件变了"的办法）。把结论写进你的笔记。**再想清楚这件事的意义**：任何人、在任何机器上，对**同样的内容**算一次，都会得到**同一个编号**；所以"两个地方算出同一个编号"就是"内容一致"的证据，和校验和是完全一样的道理。
 **为什么这道题值得做**：这是普通人唯一能验证"我拿到的东西没被换过"的手段；题目 9 要你亲手把这个工具造出来。
 
 #### 题目 6：问一个"仓库里查不到答案"的问题，并敢说"我不知道"
@@ -174,7 +188,7 @@ git hash-object <同一个文件名>                        # ③ 按硬盘上�
 **验收**：
 
 ```powershell
-cd chalk
+cd repos\chalk
 git grep -n -i -E "coverage" | Select-Object -First 10
 git ls-files | Select-String -Pattern "(?i)coverage|nyc|codecov|jest|vitest"
 ```
@@ -203,18 +217,18 @@ git ls-files | Select-String -Pattern "(?i)coverage|nyc|codecov|jest|vitest"
 
 ## 4.3 基础：单文件小工具
 
-从这里开始动手，但动的是**你自己新建的目录**。三条固定要求，每题通用：**能一条命令跑通**（用法写进 README，复制就能出结果）、**有 README**（写清它是什么、怎么跑、已知限制）、**有依赖清单**（Node 项目就是 `package.json`；零依赖也要写明）。
+从这里开始动手，但动的是**你自己新建的目录** —— 也就是 4.2 起手式里定下的那个 `tools\`（与克隆下来的 `repos\` 并列）。三条固定要求，每题通用：**能一条命令跑通**（用法写进 README，复制就能出结果）、**有 README**（写清它是什么、怎么跑、已知限制）、**有依赖清单**（Node 项目就是 `package.json`；零依赖也要写明）。
 
 **起手式（每个工具都一样）**：
 
 ```powershell
-cd <你自己挑一个放练习项目的地方>       # 例如 桌面上的 my-tools\
+cd <那个目录>\tools       # 4.2 起手式里建的那个目录下的 tools\：repos\ 放别人的仓库，tools\ 放你的练习项目
 mkdir count-lines
 cd count-lines
 git init
 ```
 
-> 建议把三个练习工具放进**同一个父目录**（如 `my-tools\`），每个工具一个子目录、各自一个 git 仓库。让 AI 写代码时，把 1.11 的五个要素一次说清：**目标 / 范围 / 约束 / 验收 / 反面**。例："写一个 `count-lines.mjs`（目标），只建这一个文件（范围），零第三方依赖（约束），给我一条我能自己跑的命令（验收），不要顺手加参数解析库（反面）。"
+> 建议把三个练习工具放进**同一个父目录**（也就是上面这个 `tools\`），每个工具一个子目录、各自一个 git 仓库。让 AI 写代码时，把 1.11 的五个要素一次说清：**目标 / 范围 / 约束 / 验收 / 反面**。例："写一个 `count-lines.mjs`（目标），只建这一个文件（范围），零第三方依赖（约束），给我一条我能自己跑的命令（验收），不要顺手加参数解析库（反面）。"
 
 #### 题目 7：数行数小工具 `count-lines`
 
@@ -224,14 +238,14 @@ git init
 **验收**：
 
 ```powershell
-cd express
+cd repos\express
 git ls-files | Select-String -Pattern "(?i)readme"     # 记下确切文件名（含大小写）
-cd ..\count-lines
-node .\count-lines.mjs ..\express\<上一步的文件名>
-(Get-Content ..\express\<上一步的文件名>).Count
+cd ..\..\tools\count-lines                             # 先退回父目录，再进你自己的工具（两边分开放）
+node .\count-lines.mjs ..\..\repos\express\<上一步的文件名>
+(Get-Content ..\..\repos\express\<上一步的文件名>).Count
 ```
 
-**看什么**：两个命令给出的数字**必须相同**。若相差 1，就是"末尾那个换行算不算一行"没定义清楚 —— 让 AI 统一口径并写进 README。本书**不写**那个文件有多少行：它会随仓库更新变化，而这种"写死的数字"最容易骗人，**以你刚跑出来的输出为准**。
+**看什么**：两个命令给出的数字**要么相同，要么相差恰好 1** —— 差的这 1 必须能用你**写进 README 的行数定义**解释清楚（典型就是"末尾那个换行算不算一行"）；**相差大于 1 才叫真的不一致**，那说明两个口径算的不是同一件事，回去查。本书**不写**那个文件有多少行：它会随仓库更新变化，而这种"写死的数字"最容易骗人，**以你刚跑出来的输出为准**。
 **为什么这道题值得做**：它是所有验收的原型：**两个独立来源对同一个数字，一致才算过**。
 
 #### 题目 8：文件名清单工具 `list-files`
@@ -242,13 +256,13 @@ node .\count-lines.mjs ..\express\<上一步的文件名>
 **验收**：
 
 ```powershell
-cd list-files
-node .\list-files.mjs ..\express
-node .\list-files.mjs ..\express | Measure-Object -Line
-(Get-ChildItem ..\express -File -Force).Count
+cd tools\list-files
+node .\list-files.mjs ..\..\repos\express
+node .\list-files.mjs ..\..\repos\express | Measure-Object -Line
+(Get-ChildItem ..\..\repos\express -File -Force).Count
 ```
 
-**看什么**：工具的输出行数与 `Get-ChildItem ... -File -Force` 数出来的一致。**但"一致"是有前提的**：你的工具必须"只列当前目录、且**不跳过**隐藏文件"，这个前提得写进 README。数字对不上时先查两处：PowerShell 那条少了 `-Force`（它默认**不显示**隐藏文件，这个默认值本身就是一道真实的坑），或者工具跟着子目录递归下去了。**判据**：**差额要能解释，而不是要能对上。**
+**看什么**：工具的输出行数与 `Get-ChildItem ... -File -Force` 数出来的一致。**但"一致"是有前提的**：你的工具必须"只列当前目录、且**不跳过**隐藏文件"，这个前提得写进 README。数字对不上时先查两处：**如果你漏写了** `-Force`（它默认**不显示**隐藏文件，这个默认值本身就是一道真实的坑），或者工具跟着子目录递归下去了。**判据**：**差额要能解释，而不是要能对上。**
 **为什么这道题值得做**：需求的模糊处几乎总在"边界"上（含不含、算不算、要不要），验收命令就是逼出边界的最好办法。
 
 #### 题目 9：SHA-256 校验和工具 `sha256`
@@ -259,25 +273,25 @@ node .\list-files.mjs ..\express | Measure-Object -Line
 **验收**：
 
 ```powershell
-cd sha256
-node .\sha256.mjs ..\express\<那个文件的名字>
-(Get-FileHash ..\express\<那个文件的名字> -Algorithm SHA256).Hash
+cd tools\sha256
+node .\sha256.mjs ..\..\repos\express\<那个文件的名字>
+(Get-FileHash ..\..\repos\express\<那个文件的名字> -Algorithm SHA256).Hash
 
 # ④ 只改一个字符，看哈希会变成什么样
-Copy-Item ..\express\<那个文件的名字> .\tmp-copy.txt
+Copy-Item ..\..\repos\express\<那个文件的名字> .\tmp-copy.txt
 (Get-FileHash .\tmp-copy.txt -Algorithm SHA256).Hash    # 与上面相同
-Add-Content .\tmp-copy.txt " "
+Add-Content .\tmp-copy.txt " "                           # 默认会追加"一个空格 + 一个换行"
 (Get-FileHash .\tmp-copy.txt -Algorithm SHA256).Hash    # 完全认不出来的另一个值
 Remove-Item .\tmp-copy.txt
 ```
 
-**看什么**：第一组两个值**忽略大小写后必须逐字符相同**（Node 的 `crypto` 与 PowerShell 的 `Get-FileHash` 是两个独立实现，一致才叫过）。第四步里，**只多了一个空格，哈希就变得完全认不出来** —— 这就是校验和的全部原理，也是"发布方贴出一个哈希"为什么有意义。真正用它验收的场景是：发布方在官网给了一个哈希，你对自己下载到的文件算一次，**两处一致才敢装**（本书故意不写死某个具体哈希值：**"两处一致"才是判据**）。
+**看什么**：第一组两个值**忽略大小写后必须逐字符相同**（Node 的 `crypto` 与 PowerShell 的 `Get-FileHash` 是两个独立实现，一致才叫过）。第四步里，**只多了一个空格和一个换行，哈希就变得完全认不出来** —— 这就是校验和的全部原理，也是"发布方贴出一个哈希"为什么有意义。真正用它验收的场景是：发布方在官网给了一个哈希，你对自己下载到的文件算一次，**两处一致才敢装**（本书故意不写死某个具体哈希值：**"两处一致"才是判据**）。
 **为什么这道题值得做**：你现在能自己造出题目 5 里那种"指纹"，也能一眼看出 AI 写的哈希代码有没有算错。
 
 ### 常见坑
 
 - **让它"顺便加个参数解析库"** → 依赖从 0 变成 1，换台机器就可能跑不起来（1.2 的"酱料"坑）。
-- **把练习项目建在你克隆下来的公开仓库里面** → 你会混淆"我的文件"和"别人的文件"，还可能手滑把改动提交到别人的项目上。**分开放。**
+- **把练习项目建在你克隆下来的公开仓库里面** → 你会混淆"我的文件"和"别人的文件"，还可能手滑把改动提交到别人的项目上。**分开放** —— 4.2 起手式里那套布局就是干这个的：`repos\` 放别人的仓库，`tools\` 放你的练习项目。
 - **README 写的文件名和实际不一样，或只在当前目录测过** → 别人第一条命令就卡住；4.8 会专门考这个。
 - **验收命令只留在聊天记录里** → 复制进 README，它才算项目的资产。
 
@@ -289,8 +303,17 @@ Remove-Item .\tmp-copy.txt
 
 这一节的交付物从"能跑"升级为"**能证明它没坏 + 能退回去**"。前置动作：把 4.3 的工具提交，形成**回退点**。
 
+> **先配一次身份**：这是全书**第一次 `git commit`**。没配过身份的话，提交会直接失败（报 `fatal: unable to auto-detect email address` 这一类），**只需做一次，以后所有仓库都有效**：
+
 ```powershell
-cd count-lines
+git config --global user.name "你的名字"
+git config --global user.email "你的邮箱"
+```
+
+> 名字随便写（它会记进每一条提交里）；邮箱可以是你真实的邮箱，也可以用 GitHub 提供的匿名邮箱。
+
+```powershell
+cd tools\count-lines
 git add -A
 git commit -m "feat: 数行数工具 v1，含 README 与验收命令"
 git log --oneline
@@ -306,12 +329,12 @@ git log --oneline
 **验收**：
 
 ```powershell
-cd count-lines
+cd tools\count-lines
 node --test tests\count-lines.test.mjs
 $LASTEXITCODE
 ```
 
-**看什么**：最后出现 `ℹ fail 0`（或 `pass N`，N 由你的用例数决定），退出码 `0`；而第 ② 步它应该如实报出过失败（`fail 1`、`✖` 或 `not ok`）。把文件名换成你实际用的；如果你写了 `package.json` 的 `test` 脚本，`npm test` 也一样。**如果你的环境（受限终端 / 沙箱）跑 `node --test` 时报 `spawn EPERM`，就加上 `--test-isolation=none` 再跑一次**（默认模式要开子进程管道，某些沙箱会挡住它）；这条也要记进 README 的验证状态 —— "它在什么环境下跑不起来"是重要信息，不是丢人的信息。
+**看什么**：最后出现 `ℹ fail 0`（或 `pass N`，N 由你的用例数决定），退出码 `0`；而第 ② 步它应该如实报出过失败（`fail 1`、`✖` 或 `not ok`）。把文件名换成你实际用的；如果你写了 `package.json` 的 `test` 脚本，`npm test` 也一样。**如果你的环境（受限终端 / 沙箱）跑 `node --test` 时报 `spawn EPERM`，就加上 `--test-isolation=none` 再跑一次**（默认模式要开子进程管道，某些沙箱会挡住它）。注意**这个开关是较新的 Node 才有的**：老一些的版本根本不认它，会直接报 `bad option` —— 那就升级 Node，或者在 README 里如实写下"在某个版本上跑不了"。这两件事都要记进 README 的验证状态 —— "它在什么环境下跑不起来"是重要信息，不是丢人的信息。
 
 **把"曾经红过"记进 README 的验证状态一节** —— 没红过的测试，不知道它有没有在测东西。
 **为什么这道题值得做**：测试是你唯一能"自动化地怀疑自己"的手段（1.4），而"红过"是它有效的唯一证据。
@@ -324,7 +347,10 @@ $LASTEXITCODE
 **验收**：
 
 ```powershell
-cd count-lines
+cd tools\count-lines
+# 如果 package.json 里没写 test 脚本：把下面每一处 npm test 都换成这一条 —— 先看清再用，
+# 否则第 ① 步就会撞上 Missing script: "test"，误以为"已经红了"：
+#   node --test tests\count-lines.test.mjs; $LASTEXITCODE
 npm test; $LASTEXITCODE          # ① 期望：fail 0 / 0
 # ← 在这里改坏 count-lines.mjs 里的一处逻辑
 npm test; $LASTEXITCODE          # ② 期望：fail ≥1 / 1
@@ -332,10 +358,9 @@ git diff --stat                  # 看到被改动的那个文件（范围应当
 git status --short
 git checkout -- .\count-lines.mjs
 npm test; $LASTEXITCODE          # ③ 期望：回到 fail 0 / 0
-# 没写 test 脚本就用：node --test tests\count-lines.test.mjs; $LASTEXITCODE
 ```
 
-**看什么**：三次运行里，**中间那次必须变红**。红的形态不止一种，看到**任意一种**都算报红：`ℹ fail 1`（或 `fail ≥1`）、`✖`、`not ok`，以及**退出码 `1`**；第一、三次必须是 `fail 0` **且**退出码 `0`。**最可靠的判据是退出码** —— 输出措辞会随 Node 版本变，退出码不会（这就是 4.1 里"退出码是金牌信号"的意思）。`git checkout -- <文件>` 是"把某个文件恢复到上次提交的状态"，这就是**回退点**的价值。
+**看什么**：三次运行里，**中间那次必须变红**。**如果第 ② 步代码明明改坏了、跑出来还是绿的**，说明你的测试没有判别力 —— 这正是本题要你发现的：去把断言改成**具体数字**（例如"这个文件应当是 3 行"），别只断言"没报错"。红的形态不止一种，看到**任意一种**都算报红：`ℹ fail 1`（或 `fail ≥1`）、`✖`、`not ok`，以及**退出码 `1`**；第一、三次必须是 `fail 0` **且**退出码 `0`。**最可靠的判据是退出码** —— 输出措辞会随 Node 版本变，退出码不会（这就是 4.1 里"退出码是金牌信号"的意思）。`git checkout -- <文件>` 是"把某个文件恢复到上次提交的状态"，这就是**回退点**的价值。
 **为什么这道题值得做**："测试全绿"只有在它**能变红**的前提下才有意义 —— 这是 1.4 那句"测试通过 ≠ 没问题"的实操版。
 
 #### 题目 12：给 README 补"已知限制 / 验证状态 / 出问题怎么办"
@@ -346,11 +371,11 @@ npm test; $LASTEXITCODE          # ③ 期望：回到 fail 0 / 0
 **验收**：
 
 ```powershell
-cd count-lines
-Select-String -Path .\README.md -Pattern '已知限制|验证状态|出问题'
+cd tools\count-lines
+Select-String -Path .\README.md -Pattern '^#{1,6}\s*(已知限制|验证状态|出问题)'
 ```
 
-**看什么**：三节标题都被命中（至少三行），且每节里都有**具体内容**，而不是空标题。**范本可以直接抄**：你 4.2 题目 3 里找到的那份公开文档 —— 它写"做不到什么"的句式，改成你自己的话就能用。
+**看什么**：命中的是**三个标题行**（`^#{1,6}` 要求这一行以 `#` 开头，所以正文里顺口提到这些词**不会凑数**），且每节里都有**具体内容**，而不是空标题。**范本可以直接抄**：你 4.2 题目 3 里找到的那份公开文档 —— 它写"做不到什么"的句式，改成你自己的话就能用。
 **为什么这道题值得做**：过期的文档比没有文档更糟，因为它**主动误导**；加上"验证状态"这一节，读者才知道哪些部分可信。
 
 ### 常见坑
@@ -383,30 +408,31 @@ Select-String -Path .\README.md -Pattern '已知限制|验证状态|出问题'
 **验收**：
 
 ```powershell
-cd list-files
+cd tools\list-files
 Get-ChildItem -Recurse -Filter *.mjs | Select-Object -ExpandProperty FullName
 Get-ChildItem -Recurse -Filter *.mjs | Select-String -Pattern 'console\.log' | Select-Object Filename,LineNumber
+node .\list-files.mjs ..\..\repos\express | Select-Object -First 3   # 新用法跑起来是什么形状？
 ```
 
-**看什么**：`console.log`（"往屏幕写"这个动作）**只应出现在最上面那一层**的文件里。如果每个文件里都在 `console.log`，说明"输出"没有分层 —— 这正是判据 5 的反例：换一种输出格式（JSON、CSV）时你得改好几个文件。
+**看什么**：`console.log`（"往屏幕写"这个动作）**只应出现在最上面那一层**的文件里。如果每个文件里都在 `console.log`，说明"输出"没有分层 —— 这正是判据 5 的反例：换一种输出格式（JSON、CSV）时你得改好几个文件。**最后那条命令是给"新加的两个能力"用的**：只看前三行就够判断**输出形状**对不对（每一行有没有带文件大小、整块是不是一张 Markdown 表格）—— **没跑过的新功能不算实现**，写在 `DESIGN.md` 里也不算。
 **为什么这道题值得做**：分层的收益不是好看，而是**"换一种输出只改一个文件"**。
 
 #### 题目 14：读一个公开仓库的结构，说出它属于哪种架构
 
 **难度**：★★☆
 **你要练的**：把"架构类型"这种虚的说法，落成**看得见的目录和文件**
-**任务**：① 克隆 `redis/redis`（C 写的知名数据库，`--depth 1` 就可以）；② 看它顶层的布局，并数出顶层有几个条目；③ 用一句话说出它属于哪一类（单文件脚本 / 按功能拆分的单体 / 多模块 / monorepo），**并给出一条支撑你判断的命令**。
+**任务**：① 在 4.2 的 `repos\` 里克隆 `redis/redis`（C 写的知名数据库，`--depth 1` 就可以；**目录名会是 `redis`**）；② 看它顶层的布局，并数出顶层有几个条目；③ 用一句话说出它属于哪一类（单文件脚本 / 按功能拆分的单体 / 多模块 / monorepo），**并给出一条支撑你判断的命令**。
 **验收**：
 
 ```powershell
-cd redis
+cd repos\redis
 Get-ChildItem | Select-Object Name
 @(Get-ChildItem).Count
 git ls-files src | Select-String -Pattern "^src/t_"
 git ls-files Makefile
 ```
 
-**看什么**：第三条命令列出的是**按"命令 / 数据类型"拆开的实现文件**（字符串类型一个、列表一个、哈希一个、集合一个……**具体文件名以你的输出为准**）。你要说出的判断是：它**不是**按"界面 / 逻辑 / 数据"分层的，而是**按变化的方向**拆文件的 —— 加一种数据类型就多一个文件，不用动别人。第四条命令打印出构建清单（`Makefile`），它在 C 项目里就是"有哪些构建单元"的真相来源。**判据**：结论不需要和"标准答案"一致（没有标准答案），但**必须能被一条命令支撑**；说不出支撑命令的结论，按本书的标准算没完成。
+**看什么**：第三条命令列出的是**按"命令 / 数据类型"拆开的实现文件**（字符串类型一个、列表一个、哈希一个、集合一个……**具体文件名以你的输出为准**）。你要说出的判断是：它**不是**按"界面 / 逻辑 / 数据"分层的，而是**按变化的方向**拆文件的 —— 加一种数据类型就多一个文件，不用动别人。第四条命令打印出构建清单（`Makefile`），它在 C 项目里就是"有哪些构建单元"的真相来源。**判据**：结论不需要和"标准答案"一致（没有标准答案），但**必须能被一条命令支撑**；说不出支撑命令的结论，按本书的标准算没完成。**顺带说清一个口径差别**：这里数顶层条目**故意不带** `-Force`（顶层该不该把隐藏条目算进"结构"里，本身就是个判断），而题目 2 的 B 数的是"硬盘上所有文件"，那里**必须带** `-Force` —— 两处口径不同是有意的，别把它们当成同一个数。
 **为什么这道题值得做**："这是哪种架构"这个问题，只有在你能**指向具体文件**的时候才有意义。
 
 #### 题目 15：微包 vs 框架：两种"拆分"的对比
@@ -417,18 +443,19 @@ git ls-files Makefile
 **验收**：
 
 ```powershell
-cd is-plain-obj
+cd repos\is-plain-obj
 @(git ls-files).Count
 git ls-files
-git grep -n -A3 '"dependencies"' -- package.json
-cd ..\express
+git grep -n -A2 -E '"(dependencies|devDependencies|peerDependencies)"' -- package.json
+cd ..\express                                          # 两个仓库都在 repos\ 里，退一层就够
 git ls-files lib
 ```
 
 **看什么**：把两组数字和两份清单并排放，差别会自己说话 —— `is-plain-obj` 的"拆分单位"就是**它自己**（一个函数一个仓库，整个包可能只有一个入口文件，**甚至一个依赖都没有**）；而 express 的拆分单位是**"一个关注点一个文件"**，靠 `require` 把它们连起来（`git ls-files lib` 会列出那些文件）。
 
+**依赖那一栏要"具名"看**，因为"空"其实有两种，不能混成一种：上面那条命令是**按名字**去找 `dependencies` / `devDependencies` / `peerDependencies`，三种结果分别读作 —— **一条都没命中** = 这几栏**根本不存在**（"没这一栏"）；**命中了、但花括号里紧接着就是 `}`** = 这一栏**存在、里面什么也没写**（"有这一栏，是空的"）；**命中了、里面有内容** = 逐条列出来看（分清哪条是运行依赖、哪条只是开发时才用的 `devDependencies`）。**如果这一栏不存在、或者是空的**，那不是"没东西可看"，而是一个结论：**它没有把任何"可能变化的东西"外包出去**。
+
 **同样是"拆"，一个拆成仓库，一个拆成文件** —— 判据是同一个：**谁和谁会一起变**。
-如果依赖那一栏是空的，那不是"没东西可看"，而是一个结论：**它没有把任何"可能变化的东西"外包出去**。
 
 > 如果你的输出和预期不一样，**不要改命令去迎合本书** —— 如实把它记下来。
 > **命令的结果比道听途说更可信。**
@@ -466,15 +493,18 @@ git ls-files lib
 
 **难度**：★★☆
 **你要练的**：看懂"多个项目"的三种装法，并知道**怎么用命令确认**
-**任务**：① 克隆 `vuejs/core`（Vue 的源码仓库，`--depth 1`）；② 数出它一个仓库里装了多少个内部包；③ 再看 `psf/requests`（Python 的 HTTP 库，`--depth 1`）：它是"一个仓库一个包"还是"一个仓库多个包"；④ 用命令确认这些仓库有没有用 submodule（内嵌仓库引用）。
+**任务**：① 在 4.2 的 `repos\` 里克隆 `vuejs/core`（Vue 的源码仓库，`--depth 1`；**目录名会是 `core`**）；② 数出它一个仓库里装了多少个内部包；③ 再看 `psf/requests`（Python 的 HTTP 库，`--depth 1`；**目录名会是 `requests`**）：它是"一个仓库一个包"还是"一个仓库多个包"；④ 用命令确认这些仓库有没有用 submodule（内嵌仓库引用）。
 **验收**：
 
 ```powershell
+cd repos
+git clone --depth 1 https://github.com/vuejs/core.git core          # 目录名会是 core
+git clone --depth 1 https://github.com/psf/requests.git requests    # 目录名会是 requests
 cd core
 git ls-files packages | ForEach-Object { ($_ -split '/')[1] } | Sort-Object -Unique
 git ls-files | Select-String -Pattern "gitmodules"      # submodule 的"登记表"在不在
 git ls-files -s | Select-String -Pattern "^160000"      # 有没有"内嵌仓库引用"（gitlink）
-cd ..\requests
+cd ..\requests                                          # 两个仓库都在 repos\ 里，退一层就够
 @(git ls-files).Count
 git grep -n -i -E "install_requires|dependencies" | Select-Object -First 5
 ```
@@ -490,14 +520,14 @@ git grep -n -i -E "install_requires|dependencies" | Select-Object -First 5
 **验收**：
 
 ```powershell
-cd ripgrep
+cd repos\ripgrep
 git ls-files | Select-String -Pattern "\.exe$|\.zip$|\.tar\.gz$|\.msi$"
 @(git tag).Count                                                        # 你手上副本里的标签
-@(git ls-remote --tags https://github.com/BurntSushi/ripgrep.git).Count  # 远端实际有多少个标签
+@(git ls-remote --tags https://github.com/BurntSushi/ripgrep.git).Count  # 远端标签的**行数**（注解标签会多一行 ^{}，所以这不是标签个数）
 git ls-files | Select-String -Pattern "(?i)license|copying|changelog"    # 它靠什么交代"这是哪一版"
 ```
 
-**看什么**：① 通常是**什么都不打印** —— 源码仓库里不存放编译出来的二进制。② 是本题最容易误读的地方：你是用 `--depth 1` 克隆的，**浅克隆往往连标签都不取**，所以本地标签数可能远小于远端 —— **"本地看不到"不等于"远端没有"**，这就是为什么第二条命令要用 `git ls-remote` 去问**远端**（它会把 `^{}` 这类解引用行也算进去，所以只是"规模感"，**别当成精确版本数**）。③ 用浏览器打开 `https://github.com/BurntSushi/ripgrep/releases`，随便点开一个发布，看它**挂出来的附件列表**里有什么 —— 那里挂的是**可以下载的文件**（可能是各平台的预编译包，也可能只有自动生成的源码包，**以你看到的为准**）。**结论**：**"仓库里没有" ≠ "没发布过"**。**换来的**是仓库只存源码，克隆快、历史小；**失去的**是光有仓库你无法"直接拿到"那个可执行文件 —— 所以必须靠**标签 + 变更记录 + 构建说明**回答"我手上这个文件是哪一版、怎么重建"。
+**看什么**：① 通常是**什么都不打印** —— 源码仓库里不存放编译出来的二进制。② 是本题最容易误读的地方：你是用 `--depth 1` 克隆的，**浅克隆往往连标签都不取**，所以本地标签数可能远小于远端 —— **"本地看不到"不等于"远端没有"**，这就是为什么第二条命令要用 `git ls-remote` 去问**远端**（`^{}` 这类解引用行**只对注解标签出现**，轻量标签没有 —— 所以数出来的是**行数**，不是标签个数，它只提供"规模感"，**别当成精确版本数**）。③ 用浏览器打开 `https://github.com/BurntSushi/ripgrep/releases`，随便点开一个发布，看它**挂出来的附件列表**里有什么 —— 那里挂的是**可以下载的文件**（可能是各平台的预编译包，也可能只有自动生成的源码包，**以你看到的为准**）。**结论**：**"仓库里没有" ≠ "没发布过"**。**换来的**是仓库只存源码，克隆快、历史小；**失去的**是光有仓库你无法"直接拿到"那个可执行文件 —— 所以必须靠**标签 + 变更记录 + 构建说明**回答"我手上这个文件是哪一版、怎么重建"。
 **为什么这道题值得做**：这是"能重建 > 有备份"在真实开源项目里的落地；你要能一眼看懂"仓库里没有，不代表没发布过"。
 
 ### 常见坑
@@ -529,30 +559,30 @@ git ls-files | Select-String -Pattern "(?i)license|copying|changelog"    # 它�
 **验收**：
 
 ```powershell
-cd is-plain-obj
+cd repos\is-plain-obj
 git ls-files
 Get-Content .\package.json | Select-String -Pattern '"main"|"exports"|"type"'
-Get-Content .\<上一步给出的那个入口文件>
+Select-String -Path .\<上一步给出的那个入口文件> -Pattern '.' | Select-Object LineNumber,Line   # 带行号读它
 ```
 
-**看什么**：你要逐条核对 AI 的每句话能不能在文件里**指到具体行**。判分只有三档：**每句都能指到行**（可信）、**大意对但细节错**（例如把一个判断说成另一个判断）、**凭印象编**（例如引用了这个文件里根本没有的函数名）。三种都要如实记下来 —— 这份记录以后就是你对它的**可信度档案**。
+**看什么**：你要逐条核对 AI 的每句话能不能在文件里**指到具体行**（最后那条命令会把**行号打在每一行前面**，所以"第几行"这句话才有东西可对）。判分只有三档：**每句都能指到行**（可信）、**大意对但细节错**（例如把一个判断说成另一个判断）、**凭印象编**（例如引用了这个文件里根本没有的函数名）。三种都要如实记下来 —— 这份记录以后就是你对它的**可信度档案**。
 **为什么这道题值得做**：这是最便宜的一种"抓错" —— **一段解释的对错，可以用一条读文件的命令来裁决**。
 
-#### 题目 19：问一个它很可能答错的细节，看它敢不敢说"不确定"
+#### 题目 19：问一个细节，再去仓库里核对，看它敢不敢说"不确定"
 
 **难度**：★★☆
 **你要练的**：识别"肯定语气"和"证据"之间的差距（1.11 的红旗清单）
-**任务**：① 问 AI：**"这个包要求 Node 的哪个版本？"**（用 4.2 克隆的 `chalk`；**先不要提示它去读文件**）；② 再用命令核对；③ 记录它的原话，以及它**有没有主动说"我不确定""我去读一下文件"**。
+**任务**：① 问 AI：**"这个包要求 Node 的哪个版本？"**（用 4.2 克隆的 `chalk`；**先不要提示它去读文件**）；② 再用命令**自己核对** —— 这是"**先问、再核对**"的题，**命中与 0 命中都算通过**；③ 记录它的原话，以及它**有没有主动说"我不确定""我去读一下文件"**。
 **验收**：
 
 ```powershell
-cd chalk
+cd repos\chalk
 git grep -n -E '"engines"' -- package.json
 git grep -n -i -E "node" -- package.json | Select-Object -First 5
 git ls-files | Select-String -Pattern "(?i)\.nvmrc|\.node-version"
 ```
 
-**看什么**：命中就把那一行**原样抄下来**（版本号会随维护者更新而变，一个字都不能凭记忆写）；**0 命中是最关键的结论** —— 这个仓库**没有声明**最低 Node 版本要求，所以正确答案是"**它没说**"，任何具体版本号都是编的。合格答案分三档：说"我不确定，我去读一下 `package.json`" 🥇；说"以仓库里的声明为准" 🥈；直接给一个版本号且拿不出出处 ❌。
+**看什么**：**命中**就把那一行**原样抄下来**（版本号会随维护者更新而变，一个字都不能凭记忆写），并说清"**这一行就是这件事唯一的权威出处**" —— AI 给出的任何版本号，只有对上这一行才算数。**0 命中也是一个结论**：这几条命令管得到的地方（`package.json` 里的声明、`.nvmrc` / `.node-version` 这类版本文件）都没有，那就如实记下"**仓库里没有声明**"，而不是替它补一个版本号。合格答案分三档：说"我不确定，我去读一下 `package.json`" 🥇；说"以仓库里的声明为准" 🥈；直接给一个版本号且拿不出出处 ❌。
 **为什么这道题值得做**：你要练的不是"它答对没有"，而是**"它分不分得清『我确定』和『我以为』"** —— 会说"不确定"的 AI，比张口就答的可靠得多。
 
 #### 题目 20：让它改代码，然后用 `git diff --stat` 检查它有没有改到不该改的地方
@@ -563,14 +593,15 @@ git ls-files | Select-String -Pattern "(?i)\.nvmrc|\.node-version"
 **验收**：
 
 ```powershell
-cd count-lines
+cd tools\count-lines
 git status --short
 # ← 在这里让 AI 动手
-git diff --stat
+git diff --name-only      # 只列出被改动的文件名，一个文件名一行
+git diff --stat           # 同样的范围，顺带看每个文件改了多少行
 git diff
 ```
 
-**看什么**：动手前 `git status --short` **没有输出**（干净）；动手后 `git diff --stat` 应当**只有一行**，也就是你允许它改的那个文件 —— 出现第二行 = 它越界了。`git diff` 给你看**具体改了哪些行**：改一条注释就该只有那一行变色，多出来的每一行都要它解释。回退时用 `git checkout -- <那个文件>` 单独回退那一处，**不要**用 `git checkout -- .` 一把全清（你会把正当的改动一起丢掉）。⚠ 两条纪律：① **这题务必在你自己 `git init` 出来的项目目录里做**，别在 clone 下来的公开仓库里做实验；② 就算在自己的副本里做了实验，也**永远不要 `push` 到别人的仓库**。
+**看什么**：动手前 `git status --short` **没有输出**（干净）；动手后 `git diff --name-only` **只应列出你允许它改的那一个文件** —— 多出一个文件名 = 它越界了。想连"改了多少行"一起看，就用 `git diff --stat`：它给的是**每个文件一行**（形如 `<文件> | N +-`），**最后那行 `N files changed ...` 是汇总、不算文件行** —— 所以判据是"**文件行只有一行**"，出现**两个文件行**才叫越界。`git diff` 给你看**具体改了哪些行**：改一条注释就该只有那一行变色，多出来的每一行都要它解释。回退时用 `git checkout -- <那个文件>` 单独回退那一处，**不要**用 `git checkout -- .` 一把全清（你会把正当的改动一起丢掉）。⚠ 两条纪律：① **这题务必在你自己 `git init` 出来的项目目录里做**，别在 clone 下来的公开仓库里做实验；② 就算在自己的副本里做了实验，也**永远不要 `push` 到别人的仓库**。
 **为什么这道题值得做**：`git diff --stat` 是你唯一能**客观**回答"它到底改了什么"的工具；"我改好了"这句话永远不能作为验收。
 
 #### 题目 21：抓"一行就能修好"（一道钓鱼题）
@@ -581,7 +612,7 @@ git diff
 **验收**：
 
 ```powershell
-cd sha256
+cd tools\sha256
 Measure-Command { node .\sha256.mjs <一个大文件> } | Select-Object -ExpandProperty TotalSeconds
 ```
 
@@ -607,15 +638,18 @@ Measure-Command { node .\sha256.mjs <一个大文件> } | Select-Object -ExpandP
 
 **难度**：★★★
 **你要练的**：把"我这儿能跑"变成"**哪儿都能跑**"（可重建，1.7 的换口气）
-**任务**：① **建项目**：在你自己新建的目录里 `git init`，让 AI 写 `mk-sums.mjs` —— 扫一个目录里的所有文件，生成 `SHA256SUMS.txt`，格式为 `<小写哈希><两个空格><文件名>`（**沿用命令行工具的通用惯例，不要自创格式**）；② **加测试与文档**：至少覆盖"空目录"和"有文件"两种情况，README 写清用法、已知限制、验证状态；③ **加回退点并演练**：提交一次，然后照题目 11 做一遍"弄坏 → 报红 → 回退"；④ **发布到 GitHub**：在你自己的 GitHub 账号下**新建一个空仓库**，把本地仓库推上去，打标签 `v1.0.0` **并推送标签**，然后在网页上发一个 Release（写清这一版包含什么、怎么验证）；⑤ **可重建演练**：换一个**全新的目录**，从 GitHub **重新 clone 一份**，按 README 跑起来。
+
+> ⚠ **这道题比别的题多一个前提**：需要**一个 GitHub 账号**（本章开头说的三样通用工具是 git、Node、浏览器；"发布"必须发到一个公开的地方，所以这一题要加它）。而且**建的这个仓库必须是公开的** —— 后面两条验收命令（`git ls-remote`、换一个目录重新 `clone`）在私有仓库上会要求登录，非交互环境里直接失败。
+
+**任务**：① **建项目**：在 4.3 的 `tools\` 里新建目录并 `git init`（也就是 `<那个目录>\tools\mk-sums`），让 AI 写 `mk-sums.mjs` —— 扫一个目录里的所有文件，生成 `SHA256SUMS.txt`，格式为 `<小写哈希><两个空格><文件名>`（**沿用命令行工具的通用惯例，不要自创格式**）；② **加测试与文档**：至少覆盖"空目录"和"有文件"两种情况，README 写清用法、已知限制、验证状态；③ **加回退点并演练**：**至少提交两次**（初始版本提交一次，加完测试与文档后再提交一次），然后照题目 11 做一遍"弄坏 → 报红 → 回退"；④ **发布到 GitHub**：在你自己的 GitHub 账号下**新建一个空仓库**（**要建成公开仓库**），把本地仓库推上去，打标签 `v1.0.0` **并推送标签**，然后在网页上发一个 Release（写清这一版包含什么、怎么验证）；⑤ **可重建演练**：换一个**全新的目录**，从 GitHub **重新 clone 一份**，按 README 跑起来。
 **验收**（五条全过才算完成）：
 
 ```powershell
-# ① 产物与独立实现一致（在你自己的项目目录里）
-cd <你的 mk-sums 项目目录>
-node .\mk-sums.mjs .\<你克隆下来的某个公开仓库目录>
-Get-Content .\SHA256SUMS.txt | Select-Object -First 3
-Get-FileHash .\<那个仓库里的某个文件> -Algorithm SHA256
+# ① 产物与独立实现一致（在你自己的练习项目里；被扫的公开仓库在 repos\ 里，两者是分开放的）
+cd <那个目录>\tools\mk-sums
+node .\mk-sums.mjs ..\..\repos\express          # 所以要退两层才到 repos\
+Select-String -Path .\SHA256SUMS.txt -Pattern '<那个文件的名字>'      # 直接定位到它的那一行
+Get-FileHash ..\..\repos\express\<那个文件的名字> -Algorithm SHA256   # 独立算一遍同一个文件
 
 # ② 测试全绿
 npm test; $LASTEXITCODE
@@ -632,10 +666,10 @@ git ls-remote --tags https://github.com/<你的账号>/mk-sums.git
 cd $env:TEMP
 git clone https://github.com/<你的账号>/mk-sums.git mk-sums-rebuild
 cd mk-sums-rebuild
-node .\mk-sums.mjs .        # 按 README 里写的用法跑一次
+node .\mk-sums.mjs .        # 按 README 里写的用法跑一次（这里就扫它自己）
 ```
 
-**看什么**：① `SHA256SUMS.txt` 里那个文件的哈希与 `Get-FileHash` 给出的值**逐字符相同**（忽略大小写），而且你要能说清"清单里的哪一行对应硬盘上的哪个文件"；② `ℹ fail 0` 且 `$LASTEXITCODE` 为 `0`；③ `git log` 至少 2 条提交、`git tag` 里有 `v1.0.0`；④ `git ls-remote --tags` 能在**远端**看到 `v1.0.0` —— **本地有标签不等于发布出去了**，标签也要 `push`，网页上的 Release 页面能看到这一版和它的说明；⑤ **在全新目录里 clone 下来、按 README 就能跑通** —— 这才叫可重建：**能重建 > 有备份**。任何一个环节失败，**先修 README，再修代码** —— 因为别人只会看到 README。提醒一句："另一个目录"只是演练，**真正的检验是另一台电脑、另一个人**按你的 README 跑一遍；在那之前，你只能说自己"在一台机器的一个目录下验证过"。
+**看什么**：① `Select-String` 定出的那一行，其哈希与 `Get-FileHash` 给出的值**逐字符相同**（忽略大小写），而且你要能说清"清单里的这一行对应硬盘上的哪个文件"；② `ℹ fail 0` 且 `$LASTEXITCODE` 为 `0`；③ `git log` 至少 2 条提交、`git tag` 里有 `v1.0.0`；④ `git ls-remote --tags` 能在**远端**看到 `v1.0.0` —— **本地有标签不等于发布出去了**，标签也要 `push`，网页上的 Release 页面能看到这一版和它的说明；⑤ **在全新目录里 clone 下来、按 README 就能跑通** —— 这才叫可重建：**能重建 > 有备份**。任何一个环节失败，**先修 README，再修代码** —— 因为别人只会看到 README。提醒一句："另一个目录"只是演练，**真正的检验是另一台电脑、另一个人**按你的 README 跑一遍；在那之前，你只能说自己"在一台机器的一个目录下验证过"。
 
 **为什么这道题值得做**：软件能不能救回来，取决于一句话 —— "**如果这台电脑明天坏了，我能不能在另一台机器上把它恢复成可用的状态？**" 这道题就是这句话的最小实战。
 
@@ -671,18 +705,18 @@ node .\mk-sums.mjs .        # 按 README 里写的用法跑一次
 | 跑单个测试文件 | `node --test tests\某文件.mjs` | `fail 0`；受限终端加 `--test-isolation=none` |
 | 看提交历史 / 某次改了什么 | `git log --oneline -5` / `git show --stat <编号>` | 有具体内容 + 文件清单 |
 | 看有没有被改动 | `git status --short` | 干净时**无输出** |
-| 看改动范围 | `git diff --stat` | 只有你允许的那个文件 |
+| 看改动范围 | `git diff --name-only`（只列文件名） | **只有你允许的那个文件**，一个文件名一行 |
+| 看改了多少行 | `git diff --stat` | **文件行只有一行**（形如 `<文件> \| N +-`）；最后那行 `N files changed` 是**汇总，不算文件行** |
 | 单文件回退 | `git checkout -- .\某文件` | 该文件回到上次提交 |
 | 数规模（仓库里的文件） | `@(git ls-files).Count` | 只数**被跟踪**的文件，不含被忽略的 |
 | 硬盘上到底有多少文件 | `@(Get-ChildItem -Recurse -File -Force).Count` | 与上一条**不相等是正常的** |
-| 是谁被忽略的 | `git check-ignore -v <路径>` | 打印 `文件:行号:规则`；0 命中=你的猜测被否决 |
+| 是谁被忽略的 | `git check-ignore -v <路径>` | 打印 `文件:行号:规则`；0 命中=你的猜测没被证实（**目录形式的规则要用带结尾斜杠的路径去问**，例如 `node_modules/`） |
 | 硬盘上有但没进库 | `git ls-files --others --ignored --exclude-standard` | 列出"被忽略但确实存在"的文件 |
-| 内容编号（校验和） | `git hash-object <文件>` / `git rev-parse HEAD:<文件>` | 两者一致 = 工作区与仓库一致 |
+| 内容编号（校验和） | `git hash-object <文件>` / `git rev-parse HEAD:<文件>` | 一致 = 工作区与仓库一致；**Windows 上不一致往往只是换行符**，先看 `git config --get core.autocrlf` |
 | 有没有内嵌仓库引用 | `git ls-files -s \| Select-String '^160000'` | 命中即用了 submodule；再看 `.gitmodules` |
 | 算文件指纹 | `Get-FileHash <文件> -Algorithm SHA256` | 与发布方给出的值一致 |
 | 远端有没有这个标签 | `git ls-remote --tags <仓库地址>` | 能列出远端标签 = 真的推上去了 |
 | 找文本 | `git grep -n -E "关键词"` / `Select-String -Path .\某文件 -Pattern '关键词'` | 命中就是有；**0 命中也是结论** |
-| 查端口是否被占（只读） | `Get-NetTCPConnection -LocalPort <端口> -ErrorAction SilentlyContinue` | 有输出=有人监听（含进程号）；**无输出或报错=不能断言"端口空闲"** |
 
 ### 三、怎么判断自己是不是真的会了：三个自问（答不上来就说明还没到位）
 
