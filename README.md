@@ -155,8 +155,8 @@
 | 文档 | 位置 | 关系 |
 |---|---|---|
 | 项目区说明 | `02-projects/README.md` | 讲项目区怎么组织、源码与产物为什么分开 |
-| 应用源码文档 | `02-projects/source/dsh_electron/README.md` | 一个真实项目的深度文档，可作为"一个完整项目长什么样"的延伸阅读 |
-| 会话日志工具箱 | `02-projects/source/dsh-session-tools/README.md` | 小型工具集的实例 |
+| 应用源码文档 | `02-projects/dev/dsh_electron/README.md` | 一个真实项目的深度文档，可作为"一个完整项目长什么样"的延伸阅读 |
+| 会话日志工具箱 | `02-projects/dev/dsh-session-tools/README.md` | 小型工具集的实例 |
 
 本书是**通用教材**：例子来自公开的知名项目，因此任何人都能跟着做，
 不要求你先拥有某个特定的代码库。
